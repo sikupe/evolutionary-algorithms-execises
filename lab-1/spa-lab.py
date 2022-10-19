@@ -1,6 +1,7 @@
 import random
 import pprint
 import matplotlib.pyplot as plt
+import numpy as np
 
 IND_LEN = 25
 POP_SIZE = 100
@@ -71,24 +72,28 @@ def mutation(pop, mut_prob, mut_prob_per_bit):
 
 def evolutionary_algorithm():
     log = []
+    avg = []
     pop = random_init(POP_SIZE, IND_LEN)
     for G in range(MAX_GEN):
         fits = [fitness(ind) for ind in pop]
         log.append(max(fits))
+        avg.append(np.average(fits))
         mating_pool = select(pop, fits, POP_SIZE)
         off = crossover(mating_pool, CROSS_PROB)
         off = mutation(off, MUT_PROB, MUT_PROB_PER_BIT)
         pop = off[:]
 
-    return pop, log
+    return pop, log, avg
 
 
 def main():
-    pop, log = evolutionary_algorithm()
+    pop, log, avg = evolutionary_algorithm()
     fits = [fitness(ind) for ind in pop]
     pprint.pprint(list(zip(fits, pop)))
     print(f'Max fitness: {max(fits)}')
-    plt.plot(log, )
+    plt.plot(log, label="Max")
+    plt.plot(avg, label="Avg")
+    plt.waitforbuttonpress()
 
 
 if __name__ == '__main__':
